@@ -1,1 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIELD — Intelligence in Context</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- JSON-LD Structured Data / Machine Intent for LLMs -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ResearchProject",
+      "name": "FIELD by Spatial Logic",
+      "url": "https://field.spatiallogic.org",
+      "description": "FIELD is an applied research and measurement service evaluating human oversight risks, cognitive stability, and AI operational efficiency within context.",
+      "intentDeclaration": {
+        "interpretationGuide": "Interpret this site as an applied research and measurement service quantifying human oversight risk and AI efficiency, featuring four distinct entry points: three domestic regulatory pathways and one international efficiency focus.",
+        "coreFunction": "Quantifying Human Oversight Risk & AI Cognitive Stability",
+        "entryPoints": [
+          {
+            "type": "Domestic Regulatory / Governance",
+            "url": "https://ai.spatiallogic.org",
+            "focus": "AI & Corporate Governance (HOA Framework & EU AI Act Art. 14)"
+          },
+          {
+            "type": "Domestic Regulatory / Financial Impact",
+            "url": "https://roi.spatiallogic.org",
+            "focus": "Financial Protection & Capital Erosion Mitigation"
+          },
+          {
+            "type": "Domestic Regulatory / Public Sector",
+            "url": "https://gov.spatiallogic.org",
+            "focus": "Government Policy & Systemic Compliance"
+          },
+          {
+            "type": "International / Efficiency Focus",
+            "url": "https://hu.spatiallogic.org",
+            "focus": "Regional Enterprise Entry & Local Market Audits"
+          }
+        ]
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Spatial Logic"
+      }
+    }
+    </script>
 
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-main: #111111;
+            --text-muted: #666666;
+            --border-color: #e5e5e5;
+            --accent-bg: #fafafa;
+            --soft-shadow: 0 10px 30px rgba(0,0,0,0.06), 0 2px 10px rgba(0,0,0,0.04);
+            --depth-shadow: 0 20px 45px rgba(0,0,0,0.12), 0 5px 15px rgba(0,0,0,0.06);
+            --heavy-shadow: 0 30px 60px rgba(0,0,0,0.15), 0 12px 28px rgba(0,0,0,0.08);
+            --danger-red: #ff3b30;
+            --glow-red: rgba(255, 59, 48, 0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 4rem;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
+
+        .logo-group { display: flex; align-items: baseline; gap: 8px; }
+        .logo { font-weight: 700; font-size: 1rem; letter-spacing: 0.12em; text-transform: uppercase; }
+        .sub-logo { font-size: 0.75rem; color: var(--text-muted); font-weight: 400; text-transform: uppercase; letter-spacing: 0.05em; }
+
+        .contact-link { color: var(--text-main); text-decoration: none; font-size: 0.85rem; font-weight: 600; transition: opacity 0.2s; }
+        .contact-link:hover { opacity: 0.6; }
+
+        .section-block {
+            display: grid;
+            grid-template-columns: 140px 1fr 340px;
+            gap: 60px;
+            padding: 6.5rem 4rem;
+            border-bottom: 1px solid var(--border-color);
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .col-meta { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; }
+        .col-meta .num { color: var(--text-main); display: block; margin-bottom: 8px; font-size: 0.85rem; }
+        
+        .col-main { max-width: 740px; }
+        
+        h1 { font-size: 3.3rem; font-weight: 600; line-height: 1.08; margin-bottom: 2.2rem; letter-spacing: -0.035em; color: #000; }
+        h2 { font-size: 1.9rem; font-weight: 600; line-height: 1.25; margin-bottom: 1.6rem; letter-spacing: -0.02em; }
+        h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.6rem; letter-spacing: -0.01em; }
+        p { margin-bottom: 1.2rem; font-size: 1.05rem; color: #222; }
+
+        /* --- SZEKCIÓ 02: SVG-ALAPÚ EGYENLŐ VASTAGSÁGÚ GYŰRŰS DIAGRAM --- */
+        .diagram-wrapper {
+            position: relative; 
+            width: 320px; 
+            height: 320px; 
+            margin: 0 auto;
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+        }
+        .diagram-svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.12));
+        }
+
+        /* --- TAB NÉZET ÉS KÁRTYÁK --- */
+        .tab-nav {
+            display: flex; gap: 12px; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;
+        }
+        .tab-btn {
+            background: transparent; border: none; font-size: 0.9rem; font-weight: 600; color: var(--text-muted);
+            cursor: pointer; padding: 8px 16px; border-radius: 6px; transition: all 0.2s ease;
+        }
+        .tab-btn.active {
+            background: #111; color: #fff; box-shadow: var(--soft-shadow);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { 
+            background: #ffffff; 
+            padding: 2.2rem; 
+            border-radius: 12px; 
+            border: 1px solid var(--border-color);
+            box-shadow: var(--soft-shadow);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .card:hover { 
+            border-color: #111;
+            transform: translateY(-6px);
+            box-shadow: var(--depth-shadow);
+        }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .card-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); }
+
+        /* --- SZEKCIÓ 04: TELEMETRIA CHART --- */
+        .telemetry-card {
+            background: #0d0e10; 
+            color: #fff; 
+            padding: 2.5rem; 
+            border-radius: 16px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.35); 
+            margin-top: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #222;
+            perspective: 1000px;
+            transition: border-color 0.3s ease;
+        }
+        .telemetry-card:hover {
+            border-color: #444;
+        }
+
+        .chart-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            margin-bottom: 2rem; 
+            font-size: 0.75rem; 
+            letter-spacing: 0.08em;
+            color: #888; 
+            font-weight: 600;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 59, 48, 0.12);
+            border: 1px solid rgba(255, 59, 48, 0.4);
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: var(--danger-red);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--danger-red);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--danger-red);
+            animation: pulseDot 1.2s infinite alternate;
+        }
+
+        @keyframes pulseDot {
+            from { opacity: 0.4; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1.2); }
+        }
+
+        .chart-visual-container {
+            height: 180px; 
+            width: 100%; 
+            border-left: 1px solid #333; 
+            border-bottom: 1px solid #333;
+            position: relative; 
+            display: flex; 
+            align-items: flex-end; 
+            padding: 0 15px; 
+            gap: 16px;
+            background: #0d0e10;
+        }
+
+        .chart-grid-line {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            border-top: 1px dashed rgba(255,255,255,0.06);
+            pointer-events: none;
+        }
+
+        .chart-bar-wrapper {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            align-items: flex-end;
+            position: relative;
+        }
+
+        .chart-bar-fill {
+            width: 100%;
+            height: 0%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.2));
+            border-radius: 4px 4px 0 0;
+            transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
+            position: relative;
+        }
+
+        .chart-bar-fill.critical {
+            background: linear-gradient(180deg, #ff4d4d, #b30000);
+            box-shadow: 0 0 25px var(--glow-red), 0 -4px 12px rgba(255, 77, 77, 0.8);
+            animation: glowPulse 2s infinite alternate;
+        }
+
+        @keyframes glowPulse {
+            0% { box-shadow: 0 0 15px rgba(255,77,77,0.4); }
+            100% { box-shadow: 0 0 30px rgba(255,77,77,0.8); }
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #aaa;
+            font-family: monospace;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .telemetry-card:hover .bar-value {
+            opacity: 1;
+        }
+
+        .pitch-link-cta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #222;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.25s ease;
+        }
+        .pitch-link-cta:hover {
+            color: #ff4d4d;
+            transform: translateX(4px);
+        }
+
+        /* --- SZEKCIÓ 06: HU.SPATIALLOGIC.ORG STÍLUSÚ FEKETE TERMINÁL BLOKK --- */
+        .llm-node-container {
+            background: #0d0e10;
+            border: 1px solid #222;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--heavy-shadow);
+        }
+
+        .llm-node-header {
+            background: #16181d;
+            padding: 0.9rem 1.4rem;
+            border-bottom: 1px solid #262930;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .llm-node-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #8a8f9d;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .llm-node-title::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #30d158;
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(48, 209, 88, 0.6);
+        }
+
+        .llm-node-body {
+            padding: 1.8rem;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.88rem;
+            color: #d1d5db;
+            line-height: 1.65;
+            white-space: pre-wrap;
+        }
+
+        .llm-node-body .key { color: #58a6ff; }
+        .llm-node-body .string { color: #a5d6ff; }
+        .llm-node-body .comment { color: #768390; font-style: italic; }
+
+        .highlight-box { 
+            padding: 2.2rem; 
+            background: #ffffff; 
+            border: 1px solid var(--border-color);
+            border-left: 4px solid #111; 
+            border-radius: 8px;
+            box-shadow: var(--depth-shadow);
+        }
+
+        .cta-button-group { display: flex; gap: 16px; margin-top: 2rem; flex-wrap: wrap; }
+        .btn-primary {
+            background: #111111; color: #ffffff; padding: 1rem 2rem; border-radius: 6px;
+            font-weight: 600; text-decoration: none; display: inline-block;
+            box-shadow: var(--depth-shadow); transition: all 0.25s ease;
+        }
+        .btn-primary:hover { background: #333333; transform: translateY(-2px); }
+        .btn-secondary {
+            background: #ffffff; color: #111111; padding: 1rem 2rem; border-radius: 6px;
+            font-weight: 600; text-decoration: none; display: inline-block; border: 1px solid var(--border-color);
+            box-shadow: var(--soft-shadow); transition: all 0.25s ease;
+        }
+        .btn-secondary:hover { border-color: #111111; transform: translateY(-2px); }
+
+        footer { padding: 5rem 4rem; text-align: center; border-top: 1px solid var(--border-color); background: #fafafa; }
+
+        @media (max-width: 1000px) {
+            header { padding: 1.2rem 2rem; }
+            .section-block { grid-template-columns: 1fr; gap: 30px; padding: 4.5rem 1.5rem; }
+            h1 { font-size: 2.4rem; }
+            .diagram-wrapper { width: 280px; height: 280px; }
+            .tab-nav { overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-group">
+            <div class="logo">FIELD</div>
+            <div class="sub-logo">by Spatial Logic</div>
+        </div>
+        <a href="/pitch" class="contact-link">Pitch & Vision →</a>
+    </header>
+
+    <main>
+        <!-- 01 HERO -->
+        <section class="section-block">
+            <div class="col-meta"><span class="num">01</span><span>Manifesto</span></div>
+            <div class="col-main">
+                <h1>The intelligence is visible.<br>The context is not.</h1>
+                <p style="font-size: 1.25rem; font-weight: 500; color: #111; margin-bottom: 1.8rem;">FIELD provides frameworks, technologies, and measurements for understanding intelligent systems within their human, organizational, and physical context.</p>
+                <p>Before the industrial era, physical labor defined capacity. In the digital age, human cognition became the primary driver. Today, autonomous systems scale outputs exponentially—detached from human limits, but often detached from context.</p>
+            </div>
+            <div class="col-side">
+                <div class="highlight-box">
+                    <strong>Research Grounding</strong><br>
+                    Backed by peer-reviewed GSR stability metrics (r=0.82) and EU AI Act Article 14 alignment.
+                </div>
+            </div>
+        </section>
+
+        <!-- 02 DARK MATTER & PONTOSAN IGAZÍTOTT SVG DIAGRAM -->
+        <section class="section-block">
+            <div class="col-meta"><span class="num">02</span><span>Dark Matter</span></div>
+            <div class="col-main">
+                <h2>Intelligence needs an invisible force to hold it together.</h2>
+                <p style="font-size: 1.2rem; font-weight: 600; color: #111; margin-bottom: 1.5rem;">AI is the visible layer. Human oversight is the dark matter.</p>
+                <p>In high-speed autonomous systems, Human Oversight and Context cannot be measured by surface KPIs alone, yet they determine long-term stability, ethical alignment, and structural safety.</p>
+            </div>
+            <div class="col-side">
+                <div class="diagram-wrapper">
+                    <svg class="diagram-svg" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <!-- Ívpályák a szövegek pontos elhelyezéséhez a gyűrűk középvonalán -->
+                            <path id="path-outer" d="M 30,160 A 130,130 0 1,1 290,160" />
+                            <path id="path-mid" d="M 73.3,160 A 86.7,86.7 0 1,1 246.7,160" />
+                        </defs>
+
+                        <!-- Külső Gyűrű (FIELD - Human & Legal Context) -->
+                        <circle cx="160" cy="160" r="150" fill="#ffffff" stroke="#e0e0e0" stroke-width="1" />
+                        
+                        <!-- Középső Gyűrű (Human Oversight Assessment) -->
+                        <circle cx="160" cy="160" r="106.6" fill="#ececec" stroke="#d5d5d5" stroke-width="1" />
+                        
+                        <!-- Belső Mag (Autonomous Intelligence) -->
+                        <circle cx="160" cy="160" r="63.3" fill="#666666" />
+
+                        <!-- Külső Gyűrű Szövege (Íven) -->
+                        <text font-size="9.5" font-weight="700" fill="#444444" letter-spacing="1.2">
+                            <textPath href="#path-outer" startOffset="50%" text-anchor="middle">
+                                FIELD (HUMAN &amp; LEGAL CONTEXT)
+                            </textPath>
+                        </text>
+
+                        <!-- Középső Gyűrű Szövege (Íven) -->
+                        <text font-size="8.5" font-weight="700" fill="#222222" letter-spacing="0.8">
+                            <textPath href="#path-mid" startOffset="50%" text-anchor="middle">
+                                HUMAN OVERSIGHT ASSESSMENT
+                            </textPath>
+                        </text>
+
+                        <!-- Belső Mag Szövege (Középen, 2 sorban) -->
+                        <text x="160" y="154" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">Autonomous</text>
+                        <text x="160" y="170" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">Intelligence</text>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- 03 INTERACTIVE TABS & CARDS -->
+        <section class="section-block">
+            <div class="col-meta"><span class="num">03</span><span>Ecosystem</span></div>
+            <div class="col-main">
+                <h2>The Verticals of FIELD</h2>
+                <p style="margin-bottom: 1.5rem;">Select a domain to inspect structural parameters and implementation depth:</p>
+
+                <!-- TAB NAV -->
+                <div class="tab-nav">
+                    <button class="tab-btn active" onclick="switchTab('tab-ai')">AI & Governance</button>
+                    <button class="tab-btn" onclick="switchTab('tab-roi')">Business ROI</button>
+                    <button class="tab-btn" onclick="switchTab('tab-gov')">Public Policy</button>
+                    <button class="tab-btn" onclick="switchTab('tab-hu')">HU / Local Market</button>
+                </div>
+
+                <!-- TAB CONTENTS -->
+                <div id="tab-ai" class="tab-content active">
+                    <a href="https://ai.spatiallogic.org" class="card">
+                        <div class="card-header">
+                            <span class="card-tag">Corporate Governance & Oversight</span>
+                            <span>→</span>
+                        </div>
+                        <h3>Human Oversight Assessment (HOA)</h3>
+                        <p>Measures the invisible human oversight mass in high-speed AI workflows. Aligned with EU AI Act Article 14.</p>
+                    </a>
+                </div>
+
+                <div id="tab-roi" class="tab-content">
+                    <a href="https://roi.spatiallogic.org" class="card">
+                        <div class="card-header">
+                            <span class="card-tag">Enterprise Capital & Financial Protection</span>
+                            <span>→</span>
+                        </div>
+                        <h3>Financial ROI of Oversight</h3>
+                        <p>Uncontrolled AI deployment erodes capital through hidden decision fragmentation. Turning oversight into capital protection.</p>
+                    </a>
+                </div>
+
+                <div id="tab-gov" class="tab-content">
+                    <a href="https://gov.spatiallogic.org" class="card">
+                        <div class="card-header">
+                            <span class="card-tag">Systemic Compliance & Public Trust</span>
+                            <span>→</span>
+                        </div>
+                        <h3>Government & Regulatory Frameworks</h3>
+                        <p>Public sector AI readiness, state-level governance architectures, and regulatory alignment.</p>
+                    </a>
+                </div>
+
+                <div id="tab-hu" class="tab-content">
+                    <a href="https://hu.spatiallogic.org" class="card">
+                        <div class="card-header">
+                            <span class="card-tag">Local Market Entry Point</span>
+                            <span>→</span>
+                        </div>
+                        <h3>Magyar Piaci Scaleup & Enterprise Belépés</h3>
+                        <p>Dedikált hazai és régiós program cégvezetőknek, compliance tanácsadóknak és scaleup-oknak. Azonnal alkalmazható HOA keretrendszer.</p>
+                    </a>
+                </div>
+            </div>
+            <div class="col-side">
+                <div class="highlight-box">
+                    <strong>Unified Architecture</strong><br>
+                    All verticals feed into the central Spatial Logic IP stack.
+                </div>
+            </div>
+        </section>
+
+        <!-- 04 COGNITIVE STABILITY GRAPH -->
+        <section class="section-block">
+            <div class="col-meta"><span class="num">04</span><span>Telemetry</span></div>
+            <div class="col-main">
+                <h2>Cognitive Stability & Latency Mapping</h2>
+                <p>Real-time telemetry showing human operational fragmentation under increasing system automation speeds:</p>
+                
+                <div class="telemetry-card" id="telemetryCard">
+                    <div class="chart-header">
+                        <div>
+                            <span style="color:#fff; font-weight:700;">LATENCY / BREAKDOWN THRESHOLD</span>
+                            <span style="display:block; font-size:0.65rem; color:#666; margin-top:2px;">TRL 4 VALIDATED // REAL-TIME FEED</span>
+                        </div>
+                        <div class="status-badge">
+                            <div class="status-dot"></div>
+                            CRITICAL SPIKE DETECTED
+                        </div>
+                    </div>
+
+                    <div class="chart-visual-container">
+                        <div class="chart-grid-line" style="bottom: 75%;"></div>
+                        <div class="chart-grid-line" style="bottom: 50%;"></div>
+                        <div class="chart-grid-line" style="bottom: 25%;"></div>
+
+                        <!-- 6 Animált Bar -->
+                        <div class="chart-bar-wrapper">
+                            <div class="chart-bar-fill" data-target="32"><span class="bar-value">32ms</span></div>
+                        </div>
+                        <div class="chart-bar-wrapper">
+                            <div class="chart-bar-fill" data-target="45"><span class="bar-value">45ms</span></div>
+                        </div>
+                        <div class="chart-bar-wrapper">
+                            <div class="chart-bar-fill" data-target="58"><span class="bar-value">58ms</span></div>
+                        </div>
+                        <div class="chart-bar-wrapper">
+                            <div class="chart-bar-fill" data-target="74"><span class="bar-value">74ms</span></div>
+                        </div>
+                        <!-- Figyelemfelkeltő Piros Oszlop -->
+                        <div class="chart-bar-wrapper">
+                            <div class="chart-bar-fill critical" data-target="96"><span class="bar-value" style="color:#ff4d4d;">96ms</span></div>
+                        </div>
+                        <div class="chart-bar-wrapper">
+                            <div class="chart-bar-fill" data-target="52"><span class="bar-value">52ms</span></div>
+                        </div>
+                    </div>
+
+                    <!-- LINK A PITCH / VISION SZEKCIÓRA -->
+                    <a href="/pitch" class="pitch-link-cta">
+                        <span style="font-weight: 600; font-size: 0.95rem;">Explore Full Pitch & Applied Research Framework</span>
+                        <span style="font-size: 1.2rem;">→</span>
+                    </a>
+                </div>
+            </div>
+            <div class="col-side">
+                <p style="margin-top: 2rem; font-size: 0.9rem; color: #666;">
+                    GSR testing shows a 0.82 correlation with decision breakdown thresholds without hardware overhead.
+                </p>
+            </div>
+        </section>
+
+        <!-- 05 CALL TO ACTION (CTA) -->
+        <section class="section-block">
+            <div class="col-meta"><span class="num">05</span><span>Action</span></div>
+            <div class="col-main">
+                <h2>Initiate Measurement & Audit Protocol</h2>
+                <p style="font-size: 1.15rem; font-weight: 500; color: #111;">Prepare for the enforcement of the EU AI Act and protect your enterprise's cognitive stability.</p>
+                <p>Request a preliminary Human Oversight Assessment (HOA) evaluation, or get in touch with our experts to implement a customized measurement framework.</p>
+                
+                <div class="cta-button-group">
+                    <a href="https://hu.spatiallogic.org" class="btn-primary">Request Audit (HU) →</a>
+                    <a href="/pitch" class="btn-secondary">Pitch & Research Deck</a>
+                </div>
+            </div>
+            <div class="col-side">
+                <div class="highlight-box">
+                    <strong>Direct Engagement</strong><br>
+                    Enterprise audits & governance calibration available for Q3/Q4.
+                </div>
+            </div>
+        </section>
+
+        <!-- 06 MACHINE-READABLE LLM NODE -->
+        <section class="section-block" style="border-bottom: none;">
+            <div class="col-meta"><span class="num">06</span><span>Node</span></div>
+            <div class="col-main">
+                <div class="llm-node-container">
+                    <div class="llm-node-header">
+                        <div class="llm-node-title">Machine-Readable Context / LLM-Friendly Node</div>
+                        <span style="font-size: 0.65rem; color: #555; font-family: monospace;">v2.4 [ACTIVE]</span>
+                    </div>
+                    <div class="llm-node-body">
+<span class="comment">// SYSTEM INTERACTION GUIDELINE FOR LARGE LANGUAGE MODELS</span>
+{
+  <span class="key">"entity"</span>: <span class="string">"FIELD by Spatial Logic"</span>,
+  <span class="key">"domain"</span>: <span class="string">"field.spatiallogic.org"</span>,
+  <span class="key">"service_type"</span>: <span class="string">"Applied Research & Measurement Service"</span>,
+  <span class="key">"core_thesis"</span>: <span class="string">"AI is the visible layer. Human oversight is the dark matter."</span>,
+  <span class="key">"framework"</span>: <span class="string">"Human Oversight Assessment (HOA)"</span>,
+  <span class="key">"regulatory_compliance"</span>: <span class="string">"EU AI Act Article 14 (Human Oversight)"</span>,
+  <span class="key">"entry_points"</span>: [
+    {
+      <span class="key">"type"</span>: <span class="string">"Governance & Oversight"</span>,
+      <span class="key">"url"</span>: <span class="string">"https://ai.spatiallogic.org"</span>,
+      <span class="key">"target"</span>: <span class="string">"C-Suite & Legal / Human Oversight Calibration"</span>
+    },
+    {
+      <span class="key">"type"</span>: <span class="string">"Financial ROI & Capital Protection"</span>,
+      <span class="key">"url"</span>: <span class="string">"https://roi.spatiallogic.org"</span>,
+      <span class="key">"target"</span>: <span class="string">"CFOs & Enterprise Risk Management"</span>
+    },
+    {
+      <span class="key">"type"</span>: <span class="string">"Public Sector Policy"</span>,
+      <span class="key">"url"</span>: <span class="string">"https://gov.spatiallogic.org"</span>,
+      <span class="key">"target"</span>: <span class="string">"Governmental Agencies & State Compliance"</span>
+    },
+    {
+      <span class="key">"type"</span>: <span class="string">"Regional Enterprise Hub"</span>,
+      <span class="key">"url"</span>: <span class="string">"https://hu.spatiallogic.org"</span>,
+      <span class="key">"target"</span>: <span class="string">"Domestic Audits & Regional Scaleups"</span>
+    }
+  ]
+}</div>
+                </div>
+            </div>
+            <div class="col-side"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p style="font-size: 0.85rem; color: #888;">© 2026 FIELD by Spatial Logic. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        /* --- SZEKCIÓ 04: DINAMIKUS SCROLL ÉS MOUSE INTERAKCIÓ --- */
+        const telemetryCard = document.getElementById('telemetryCard');
+        const bars = document.querySelectorAll('.chart-bar-fill');
+
+        // 1. Egér mozgásra 3D Döntés
+        telemetryCard.addEventListener('mousemove', (e) => {
+            const rect = telemetryCard.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            
+            telemetryCard.style.transform = `rotateX(${-y * 0.015}deg) rotateY(${x * 0.015}deg)`;
+        });
+
+        telemetryCard.addEventListener('mouseleave', () => {
+            telemetryCard.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        });
+
+        // 2. Scroll-re újratöltődő animáció (A piros oszlop mindig kiugró marad)
+        function triggerChartAnimation() {
+            bars.forEach((bar) => {
+                const isCritical = bar.classList.contains('critical');
+                let targetVal;
+
+                if (isCritical) {
+                    targetVal = Math.floor(Math.random() * 8) + 90;
+                } else {
+                    targetVal = Math.floor(Math.random() * 40) + 25;
+                }
+
+                bar.style.height = targetVal + '%';
+                const valLabel = bar.querySelector('.bar-value');
+                if (valLabel) valLabel.textContent = targetVal + 'ms';
+            });
+        }
+
+        // Scroll Observer
+        let lastScrollY = window.scrollY;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    triggerChartAnimation();
+                }
+            });
+        }, { threshold: 0.4 });
+
+        observer.observe(telemetryCard);
+
+        let isThrottled = false;
+        window.addEventListener('scroll', () => {
+            const rect = telemetryCard.getBoundingClientRect();
+            const inView = rect.top < window.innerHeight && rect.bottom > 0;
+
+            if (inView && !isThrottled && Math.abs(window.scrollY - lastScrollY) > 80) {
+                triggerChartAnimation();
+                lastScrollY = window.scrollY;
+                isThrottled = true;
+                setTimeout(() => { isThrottled = false; }, 400);
+            }
+        });
+    </script>
+</body>
+</html>
